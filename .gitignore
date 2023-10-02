@@ -1,0 +1,13 @@
+# Ignore everything
+*
+
+# Allow folders
+!*/
+
+!scenes/**
+!scripts/**
+!src/**
+!.gitignore
+!Dockerfile
+!Makefile
+!README.md
