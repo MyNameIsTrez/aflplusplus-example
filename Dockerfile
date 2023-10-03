@@ -1,6 +1,6 @@
 FROM aflplusplus/aflplusplus
 
-RUN apt update && apt install -y libglfw3-dev screen tmux
+RUN apt update && apt install -y screen tmux
 
 # Allow using the mouse in tmux
 RUN { \
@@ -13,9 +13,10 @@ RUN { \
 		echo "defmousetrack on"; \
 	} > ~/.screenrc
 
-COPY ./scripts/ /tmp/scripts
-RUN chmod +x /tmp/scripts/*
-RUN mv /tmp/scripts/* /usr/bin/
+RUN ln -s /src/scripts/coverage.sh /usr/bin/
+RUN ln -s /src/scripts/fuzz.sh /usr/bin/
+RUN ln -s /src/scripts/minimize_crashes.sh /usr/bin/
+RUN ln -s /src/scripts/setup.sh /usr/bin/
 
 WORKDIR /src
 

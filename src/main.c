@@ -1,3 +1,5 @@
+#include <assert.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -6,77 +8,85 @@
 __AFL_FUZZ_INIT()
 #endif
 
-enum
-{
-	OK,
-	ERROR,
-};
-
-static int	run(int argc, char *argv[], char *buf)
+static void run(int argc, char *argv[], char *buf)
 {
 	(void)argc;
 	(void)argv;
 
-	if (buf[0] == 'a' && buf[1] == 'b' && buf[2] == 'c')
+	// So x.txt doesn't take the same path as an empty file,
+	// which'd result in "WARNING: Down to zero bytes"
+	if (buf[0] == 'x')
 	{
-		// Different EXIT_FAILURE path
-		if (buf[3] == 'x')
-		{
-			exit(EXIT_FAILURE);
-		}
-		// Infinite loop
-		if (buf[3] == 'y')
-		{
-			unsigned i = 0;
-			while (1)
-			{
-				i++;
-			}
-			abort();
-		}
-		// Abnormal termination
-		if (buf[3] == 'z')
-		{
-			// abort();
-			exit(42);
-		}
-		if (buf[3] == 'a')
-		{
-			if (buf[4] == '1')
-			{
-				// TODO: Why doesn't division by 0 seem to crash the program, according to afl?
-				// int a = 1 / buf[3];
-				// exit(a);
-				printf("%s\n", argv[42]);
-				abort();
-			}
-			// if (buf[4] == '2')
-			// {
-			// 	if (buf[5] == '3')
-			// 	{
-			// 		if (buf[6] == '4')
-			// 		{
-			// 			if (buf[7] == '5')
-			// 			{
-			// 				abort();
-			// 			}
-			// 		}
-			// 	}
-			// }
-		}
 		exit(EXIT_FAILURE);
 	}
 
-	return OK;
+	if (buf[0] == 'a')
+	{
+		if (buf[1] == 'b')
+		{
+			// Requires AFL_USE_UBSAN to be detected
+			if (buf[2] == 'w')
+			{
+				char *p = NULL;
+				char a = *p;
+				(void)a;
+			}
+			// Different EXIT_FAILURE path
+			if (buf[2] == 'x')
+			{
+				exit(EXIT_FAILURE);
+			}
+			// Infinite loop
+			if (buf[2] == 'y')
+			{
+				unsigned i = 0;
+				while (1)
+				{
+					i++;
+				}
+				abort();
+			}
+			// Abnormal termination
+			if (buf[2] == 'z')
+			{
+				// abort();
+				exit(42);
+			}
+			// Division by 0
+			if (buf[2] == '\0')
+			{
+				int a = 1 / buf[2];
+				exit(a);
+			}
+			// Deep abort()
+			if (buf[2] == 'c')
+			{
+				if (buf[3] == 'd')
+				{
+					if (buf[4] == 'e')
+					{
+						if (buf[5] == 'f')
+						{
+							// This seems to be too deep for afl++ to reach in a reasonable amount of time, for some reason
+							abort();
+						}
+						// abort();
+					}
+				}
+			}
+		}
+	}
 }
 
-int	main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 #ifdef __AFL_HAVE_MANUAL_CONTROL
   __AFL_INIT();
 #endif
 
-	unsigned char *buf;
+	printf("Started program\n");
+
+	unsigned char *buf = (unsigned char *)"";
 #ifdef AFL
 	argc = 2;
 	buf = __AFL_FUZZ_TESTCASE_BUF;

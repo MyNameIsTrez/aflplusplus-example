@@ -4,9 +4,9 @@
 # Allow folders
 !*/
 
-!scenes/**
 !scripts/**
 !src/**
+!tests/**
 !.gitignore
 !Dockerfile
 !Makefile

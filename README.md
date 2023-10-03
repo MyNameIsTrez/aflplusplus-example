@@ -1,26 +1,27 @@
-# miniRT
+# aflplusplus-example
 
-# Fuzzing
+# Getting started
 
-## Build and run docker
-`docker build -t afl-glfw . && docker run --rm -it -v .:/src afl-glfw`
+1. Run `docker build -t afl-glfw . && docker run --rm -it -v .:/src afl-glfw` to build and run docker with
+2. Run `setup.sh` to compile for afl-cmin + afl-tmin, generate tests, and compile for AFL
+3. Run `coverage.sh` to fuzz while generating coverage
 
-## Compile for afl-cmin + afl-tmin, generate tests, and compile for AFL
-`setup.sh`
+The `Coverage Gutters` VS Code extension shows it inline, or you can view the coverage information in your browser by opening `afl/afl-output/master/cov/web/index.html`
 
-## Fuzzing without generating coverage
+Note that you'll want to run `coverage.sh` a few times, as the random search nature of afl++ can cause it to find something instantly that would've taken forever otherwise.
 
-### Start fuzzing
+# Extra commands
+
+## Fuzz without generating coverage
 `fuzz.sh`
 
-### Minimize any crash files
+## Minimize any crash files
 `minimize_crashes.sh`
 
-## Fuzzing while generating coverage, for the Coverage Gutters VS Code extension
-`coverage.sh`
+## Analyze crash 0 by checking what the program printed and what signal killed the program
+`< /src/afl/minimized-crashes/0 afl-showmap -o /dev/null -- /src/example_ctmin`
 
-## View the output of a scene from stdin
-`< /src/scenes/valid/example.rt cat | afl-showmap -o /dev/null -- /src/miniRT_ctmin`
+## Analyze crash 0 by coloring its characters based on relevancy
+This isn't working properly for some reason, and it's giving different results every time you run it:
 
-## Analyze crash 0 by coloring its characters based on criticality
-`afl-analyze -i /src/afl/minimized-crashes/0 -- /src/miniRT_ctmin`
+`afl-analyze -i /src/afl/minimized-crashes/0 -- /src/example_ctmin`
