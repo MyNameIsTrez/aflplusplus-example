@@ -2,7 +2,7 @@
 
 # Getting started
 
-1. Run `docker build -t afl-glfw . && docker run --rm -it -v .:/src afl-glfw` to build and run docker with
+1. Run `docker build -t aflplusplus-example . && docker run --rm -it -v .:/src aflplusplus-example` to build and run docker with
 2. Run `setup.sh` to compile for afl-cmin + afl-tmin, generate tests, and compile for AFL
 3. Run `coverage.sh` to fuzz while generating coverage
 
