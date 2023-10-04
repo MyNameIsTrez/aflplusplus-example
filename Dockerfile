@@ -1,4 +1,4 @@
-FROM aflplusplus/aflplusplus
+FROM aflplusplus/aflplusplus:v4.08c
 
 RUN apt update && apt install -y screen tmux
 
