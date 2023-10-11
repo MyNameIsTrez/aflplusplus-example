@@ -1,10 +1,12 @@
 ################################################################################
 
-NAME := example
+NAME := config_fuzzing
 
-CC := gcc
+CC := c++
 
 CFLAGS := -Wall -Wextra -Werror -Wpedantic -Wfatal-errors -Wconversion
+
+OBJDIR := obj
 
 ################################################################################
 
@@ -15,32 +17,31 @@ endif
 # CFLAGS += -fsanitize=address,undefined
 # endif
 ifdef AFL
-NAME := example_afl
-CC := afl-clang-lto
+NAME := config_fuzzing_afl
+CC := afl-clang-lto++
 CFLAGS += -Wno-gnu-statement-expression -DAFL=1
 OBJDIR := obj_afl
 endif
 ifdef CTMIN
-NAME := example_ctmin
-CC := afl-clang-lto
+NAME := config_fuzzing_ctmin
+CC := afl-clang-lto++
 CFLAGS += -DCTMIN=1
 OBJDIR := obj_ctmin
 endif
 ifdef GCOV
-NAME := example_gcov
-CC := afl-gcc-fast
+NAME := config_fuzzing_gcov
+CC := afl-g++-fast
 CFLAGS += -Wno-gnu-statement-expression -fprofile-arcs -ftest-coverage -DGCOV=1
 OBJDIR := obj_gcov
 endif
 
 ################################################################################
 
-CFILES := src/main.c
+CFILES := src/Config.cpp fuzzing/src/main.cpp
 
 ################################################################################
 
-OBJDIR := obj
-OBJFILES := $(addprefix $(OBJDIR)/,$(CFILES:c=o))
+OBJFILES := $(addprefix $(OBJDIR)/,$(CFILES:cpp=o))
 
 ################################################################################
 
@@ -48,27 +49,34 @@ OBJFILES := $(addprefix $(OBJDIR)/,$(CFILES:c=o))
 all: $(NAME)
 
 $(NAME): $(OBJFILES)
-	@$(CC) $(CFLAGS) $(OBJFILES) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJFILES) -o $(NAME)
 
-$(OBJDIR)/%.o : %.c
-	@mkdir -p $(@D)
-	@$(CC) $(CFLAGS) -c $< -o $@
+$(OBJDIR)/%.o : ../%.cpp
+	mkdir -p $(@D)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJDIR)/%.o : %.cpp
+	mkdir -p $(@D)
+	$(CC) $(CFLAGS) -c $< -o $@
 
 ################################################################################
 
 .PHONY: clean
 clean:
-	@rm -rf afl
+	rm -rf afl/
 
-	@rm -rf obj
-	@rm -rf obj_afl
-	@rm -rf obj_ctmin
-	@rm -rf obj_gcov
+	rm -rf obj/
+	rm -rf obj_afl/
+	rm -rf obj_ctmin/
+	rm -rf obj_gcov/
 
-	@rm -f example
-	@rm -f example_afl
-	@rm -f example_ctmin
-	@rm -f example_gcov
+	rm -f config_fuzzing
+	rm -f config_fuzzing_afl
+	rm -f config_fuzzing_ctmin
+	rm -f config_fuzzing_gcov
+
+.PHONY: fclean
+fclean: clean
 
 .PHONY: re
 re: clean all

@@ -1,10 +1,20 @@
 # aflplusplus-example
 
-# Getting started
+# Booting the C fuzzing Docker file
 
-1. Run `docker build -t aflplusplus-example . && docker run --rm -it -v .:/src aflplusplus-example` to build and run docker with
-2. Run `setup.sh` to compile for afl-cmin + afl-tmin, generate tests, and compile for AFL
-3. Run `coverage.sh` to fuzz while generating coverage
+1. `cd c`
+2. Run `docker build -t aflplusplus-example . && docker run --rm -it -v .:/src aflplusplus-example` to build and run docker with
+
+# Booting the C++ fuzzing Docker file
+
+1. `cd cpp`
+2. Run `docker build -t aflplusplus-example fuzzing && docker run --rm -it -v .:/src aflplusplus-example` to build and run docker with
+
+# Fuzzing
+
+3. Run `setup.sh` to compile for afl-cmin + afl-tmin, generate tests, and compile for AFL
+4. Run `coverage.sh` to fuzz while generating coverage
+5. Run `minimize_crashes.sh` to minimize the crashes, which are then put in `/src/fuzzing/afl/minimized-crashes/`
 
 The `Coverage Gutters` VS Code extension shows it inline, or you can view the coverage information in your browser by opening `afl/afl-output/master/cov/web/index.html`
 
@@ -14,9 +24,6 @@ Note that you'll want to run `coverage.sh` a few times, as the random search nat
 
 ## Fuzz without generating coverage
 `fuzz.sh`
-
-## Minimize any crash files
-`minimize_crashes.sh`
 
 ## Analyze crash 0 by checking what the program printed and what signal killed the program
 `< /src/afl/minimized-crashes/0 afl-showmap -o /dev/null -- /src/example_ctmin`

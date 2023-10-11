@@ -4,10 +4,17 @@
 # Allow folders
 !*/
 
-!scripts/**
-!src/**
-!tests/**
+!c/scripts/**
+!c/src/**
+!c/tests/**
+!c/Dockerfile
+!c/Makefile
+
+!cpp/fuzzing/scripts/**
+!cpp/fuzzing/src/**
+!cpp/fuzzing/tests/**
+!cpp/fuzzing/Dockerfile
+!cpp/fuzzing/Makefile
+
 !.gitignore
-!Dockerfile
-!Makefile
 !README.md
