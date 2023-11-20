@@ -25,6 +25,9 @@ Note that you'll want to run `coverage.sh` a few times, as the random search nat
 ## Fuzz without generating coverage
 `fuzz.sh`
 
+## Inspect crashes in Docker
+`AFL_DEBUG=1 afl-fuzz -D -i /src/fuzzing/afl/trimmed-tests -x /src/fuzzing/conf.dict -o /src/fuzzing/afl/afl-output -M master -- /src/fuzzing/config_fuzzing_afl`
+
 ## Analyze crash 0 by checking what the program printed and what signal killed the program
 `< /src/afl/minimized-crashes/0 afl-showmap -o /dev/null -- /src/example_ctmin`
 
